@@ -1,0 +1,33 @@
+{
+  "baseline_intervals": [
+    {
+      "load": 0.7,
+      "interval": 206.3087498430122,
+      "observed": 0.6983259251949994
+    },
+    {
+      "load": 0.85,
+      "interval": 172.70957514629256,
+      "observed": 0.8471374201073003
+    },
+    {
+      "load": 0.95,
+      "interval": 158.57490327734664,
+      "observed": 0.9458800218007717
+    }
+  ],
+  "warm_days": 90,
+  "days": 365,
+  "replications": 5,
+  "days_by_load": {
+    "0.7": 365,
+    "0.85": 365,
+    "0.95": 730
+  },
+  "reps_by_load": {
+    "0.7": 5,
+    "0.85": 5,
+    "0.95": 20
+  },
+  "precision_plan": "Independent pilot: 5x365-day relative halfwidths 1.25%,2.41%,16.88%. Use 5x365 / 5x365 / 20x730 days, respectively, for expected <5% (t correction and inverse-square-root exposure scaling). Final achieved precision explicitly checked."
+}

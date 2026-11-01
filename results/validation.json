@@ -1,0 +1,14 @@
+{
+  "runs": 960,
+  "all_precision_pass": false,
+  "max_relative_halfwidth": 0.3064275566739954,
+  "max_little_error": 0.060888219706179234,
+  "max_step_wip_identity_error": 2.842170943040401e-14,
+  "max_util_target_error_equal_util": 0.02819690574414191,
+  "max_flow_imbalance": 0.0563816604708798,
+  "complete_factorial": true,
+  "event_files": 3840,
+  "event_bytes": 2128699660,
+  "max_shapley_identity_error": 1.4210854715202004e-14,
+  "positive_drift_cells": 3
+}

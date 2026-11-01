@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='utf-8'?>
+<workbook version="18.1" source-platform="win">
+  <datasources>
+    <datasource caption="Operating curves - equal starts" inline="true" name="textscan.view1" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="view1" name="view1">
+            <connection class="textscan" directory="Data" filename="view1.csv" />
+          </named-connection>
+        </named-connections>
+        <relation connection="view1" name="view1" table="[view1#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="scenario" ordinal="0" />
+            <column datatype="real" name="throughput" ordinal="1" />
+            <column datatype="real" name="mean_hours" ordinal="2" />
+          </columns>
+        </relation>
+      </connection>
+      <column datatype="string" name="[scenario]" role="dimension" type="nominal" />
+      <column datatype="real" name="[throughput]" role="dimension" type="quantitative" />
+      <column datatype="real" name="[mean_hours]" role="measure" type="quantitative" />
+    </datasource>
+    <datasource caption="WIP by step - 85 percent baseline" inline="true" name="textscan.view2" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="view2" name="view2">
+            <connection class="textscan" directory="Data" filename="view2.csv" />
+          </named-connection>
+        </named-connections>
+        <relation connection="view2" name="view2" table="[view2#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="string" name="step" ordinal="0" />
+            <column datatype="real" name="lots" ordinal="1" />
+          </columns>
+        </relation>
+      </connection>
+      <column datatype="string" name="[step]" role="dimension" type="nominal" />
+      <column datatype="real" name="[lots]" role="measure" type="quantitative" />
+    </datasource>
+    <datasource caption="Moves and target - final 28 days" inline="true" name="textscan.view3" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="view3" name="view3">
+            <connection class="textscan" directory="Data" filename="view3.csv" />
+          </named-connection>
+        </named-connections>
+        <relation connection="view3" name="view3" table="[view3#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="real" name="day" ordinal="0" />
+            <column datatype="string" name="series" ordinal="1" />
+            <column datatype="real" name="moves_per_day" ordinal="2" />
+          </columns>
+        </relation>
+      </connection>
+      <column datatype="real" name="[day]" role="dimension" type="quantitative" />
+      <column datatype="string" name="[series]" role="dimension" type="nominal" />
+      <column datatype="real" name="[moves_per_day]" role="measure" type="quantitative" />
+    </datasource>
+    <datasource caption="Baseline CT - four-hour bins" inline="true" name="textscan.view4" version="18.1">
+      <connection class="federated">
+        <named-connections>
+          <named-connection caption="view4" name="view4">
+            <connection class="textscan" directory="Data" filename="view4.csv" />
+          </named-connection>
+        </named-connections>
+        <relation connection="view4" name="view4" table="[view4#csv]" type="table">
+          <columns character-set="UTF-8" header="yes" locale="en_US" separator=",">
+            <column datatype="real" name="bin_start" ordinal="0" />
+            <column datatype="real" name="lots" ordinal="1" />
+          </columns>
+        </relation>
+      </connection>
+      <column datatype="real" name="[bin_start]" role="dimension" type="quantitative" />
+      <column datatype="real" name="[lots]" role="measure" type="quantitative" />
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name="Operating curves - equal starts">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Operating curves - equal starts" name="textscan.view1" />
+          </datasources>
+          <datasource-dependencies datasource="textscan.view1">
+            <column datatype="string" name="[scenario]" role="dimension" type="nominal" />
+            <column-instance column="[scenario]" derivation="None" name="[none:scenario:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[throughput]" role="dimension" type="quantitative" />
+            <column-instance column="[throughput]" derivation="None" name="[none:throughput:qk]" pivot="key" type="quantitative" />
+            <column datatype="real" name="[mean_hours]" role="measure" type="quantitative" />
+            <column-instance column="[mean_hours]" derivation="Avg" name="[avg:mean_hours:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Line" />
+            <encodings>
+              <color column="[textscan.view1].[none:scenario:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[textscan.view1].[avg:mean_hours:qk]</rows>
+        <cols>[textscan.view1].[none:throughput:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="WIP by step - 85 percent baseline">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="WIP by step - 85 percent baseline" name="textscan.view2" />
+          </datasources>
+          <datasource-dependencies datasource="textscan.view2">
+            <column datatype="string" name="[step]" role="dimension" type="nominal" />
+            <column-instance column="[step]" derivation="None" name="[none:step:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[lots]" role="measure" type="quantitative" />
+            <column-instance column="[lots]" derivation="Avg" name="[avg:lots:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+          </pane>
+        </panes>
+        <rows>[textscan.view2].[avg:lots:qk]</rows>
+        <cols>[textscan.view2].[none:step:nk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Moves and target - final 28 days">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Moves and target - final 28 days" name="textscan.view3" />
+          </datasources>
+          <datasource-dependencies datasource="textscan.view3">
+            <column datatype="real" name="[day]" role="dimension" type="quantitative" />
+            <column-instance column="[day]" derivation="None" name="[none:day:qk]" pivot="key" type="quantitative" />
+            <column datatype="string" name="[series]" role="dimension" type="nominal" />
+            <column-instance column="[series]" derivation="None" name="[none:series:nk]" pivot="key" type="nominal" />
+            <column datatype="real" name="[moves_per_day]" role="measure" type="quantitative" />
+            <column-instance column="[moves_per_day]" derivation="Avg" name="[avg:moves_per_day:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Line" />
+            <encodings>
+              <color column="[textscan.view3].[none:series:nk]" />
+            </encodings>
+          </pane>
+        </panes>
+        <rows>[textscan.view3].[avg:moves_per_day:qk]</rows>
+        <cols>[textscan.view3].[none:day:qk]</cols>
+      </table>
+    </worksheet>
+    <worksheet name="Baseline CT - four-hour bins">
+      <table>
+        <view>
+          <datasources>
+            <datasource caption="Baseline CT - four-hour bins" name="textscan.view4" />
+          </datasources>
+          <datasource-dependencies datasource="textscan.view4">
+            <column datatype="real" name="[bin_start]" role="dimension" type="quantitative" />
+            <column-instance column="[bin_start]" derivation="None" name="[none:bin_start:qk]" pivot="key" type="quantitative" />
+            <column datatype="real" name="[lots]" role="measure" type="quantitative" />
+            <column-instance column="[lots]" derivation="Avg" name="[avg:lots:qk]" pivot="key" type="quantitative" />
+          </datasource-dependencies>
+          <aggregation value="true" />
+        </view>
+        <style />
+        <panes>
+          <pane>
+            <view>
+              <breakdown value="auto" />
+            </view>
+            <mark class="Bar" />
+          </pane>
+        </panes>
+        <rows>[textscan.view4].[avg:lots:qk]</rows>
+        <cols>[textscan.view4].[none:bin_start:qk]</cols>
+      </table>
+    </worksheet>
+  </worksheets>
+  <dashboards>
+    <dashboard name="Mini-Fab operations">
+      <style />
+      <size maxheight="800" maxwidth="1200" minheight="800" minwidth="1200" sizing-mode="fixed" />
+      <zones>
+        <zone type="text" id="5" h="12000" w="100000" x="0" y="0">
+          <formatted-text>
+            <run bold="true" fontsize="15">Mini-Fab operations | Balanced experiment. 85% baseline detail uses replication 0 for moves and CT. Published benchmark failed.</run>
+          </formatted-text>
+        </zone>
+        <zone id="1" name="Operating curves - equal starts" x="0" y="12000" w="50000" h="44000" />
+        <zone id="2" name="WIP by step - 85 percent baseline" x="50000" y="12000" w="50000" h="44000" />
+        <zone id="3" name="Moves and target - final 28 days" x="0" y="56000" w="50000" h="44000" />
+        <zone id="4" name="Baseline CT - four-hour bins" x="50000" y="56000" w="50000" h="44000" />
+      </zones>
+    </dashboard>
+  </dashboards>
+</workbook>

@@ -1,0 +1,13 @@
+view,load,scale,shapiro_p,levene_p,r_squared,caveat
+equal_starts,0.7,raw,0.04176392254234776,0.2101891158133981,0.9248556696955045,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_starts,0.7,log,0.04702592726025092,0.21005703780629414,0.9321374966335839,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_starts,0.85,raw,0.061792838545714754,0.08057713853972048,0.8195302059300096,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_starts,0.85,log,0.10779109055961333,0.046649259023449886,0.8755163400790371,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_starts,0.95,raw,5.0787684932590145e-15,1.4112576419785858e-25,0.7339520808410099,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_starts,0.95,log,0.016751237048290388,5.949233965201874e-31,0.8822120625617019,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_utilization,0.7,raw,0.6789388711407249,0.2108786137338391,0.937093480985078,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_utilization,0.7,log,0.6712235366158308,0.21556799610128885,0.94159547587357,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_utilization,0.85,raw,9.967415276567898e-05,0.19763679520002955,0.8299630825686237,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_utilization,0.85,log,0.008584404444241842,0.17464867791276234,0.8779208029870956,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_utilization,0.95,raw,6.69033459903888e-13,1.422093637610101e-21,0.8136535519896958,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
+equal_utilization,0.95,log,0.0006443753014651389,6.549988759774874e-30,0.9102459353814392,ANOVA p-values descriptive under CRN; paired contrast t-tests primary; no multiplicity correction
