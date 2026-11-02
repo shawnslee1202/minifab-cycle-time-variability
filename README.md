@@ -1,100 +1,66 @@
-# Mini-Fab cycle-time variability study
+# Mini-Fab cycle time variability
 
-![85% variability allocation](figures/pareto_85.png)
+How the timing of new orders affects the time a batch of wafers spends in a semiconductor factory.
 
-**85% equal starts:** baseline 40.56 h; smooth starts 26.72 h; best tested BCD 25.23 h. The illustrative 24-hour target is infeasible among the tested combinations.
+Author: Shawn ([shawnslee1202](https://github.com/shawnslee1202))
 
-**External benchmark failed.** Published throughput and cycle time do not jointly match the reference runs. See [the comparison and capacity calculation](docs/BENCHMARK.md). Source parameters place setups at lithography and random repairs at implant.
+![Average time in the factory versus completed lots per day under six operating policies](figures/operating_equal_starts.png)
 
-96/96 cell means meet the 5% precision criterion for the measured horizon (maximum relative half-width 4.87%). The balanced factorial uses 960 runs. Two fixed confirmation stages add 6,989 and 256 runs. The [final estimates](results/final_precision.csv) give the confidence interval and sampling stage for each case. At 85% equal starts the confirmed baseline is 39.10 hours, compared with 26.72 hours for smooth starts. The budget and effects below come from the balanced factorial.
+Each curve shows what happens as more lots enter the simulated factory. Policies at the same load receive the same average number of starts per day.
 
-[Two-page report](reports/report.pdf) · [Tableau dashboard](tableau/Mini-Fab.twbx) · [Detailed findings](docs/FINDINGS.md) · [Download the project with the offline dashboard and SQL sample](https://github.com/shawnslee1202/minifab-cycle-time-variability/releases/latest)
+## What this is
 
-## Variability budget
+A lot is a group of wafers that moves through the factory together. Each lot visits some machines twice and may wait for other lots before a furnace can start. Using processing times from published Mini-Fab studies, the simulation compares four changes: starting a furnace before it fills, shortening machine changeovers, speeding up repairs and spacing new arrivals evenly. The study used 960 runs to compare policies and 7,245 further runs to narrow uncertainty in their estimated average times.
 
-| scenario   |   cost |   mean_hours |   saved_hours | conservative_meets_target   |
-|:-----------|-------:|-------------:|--------------:|:----------------------------|
-| Baseline   |      0 |        40.56 |          0    | False                       |
-| A          |      1 |        43.8  |         -3.24 | False                       |
-| D          |      2 |        26.72 |         13.84 | False                       |
-| AD         |      3 |        28.24 |         12.32 | False                       |
-| B          |      3 |        37.76 |          2.8  | False                       |
-| AB         |      4 |        39.51 |          1.05 | False                       |
-| BD         |      5 |        26.15 |         14.41 | False                       |
-| C          |      5 |        41.18 |         -0.62 | False                       |
-| ABD        |      6 |        27.89 |         12.67 | False                       |
-| AC         |      6 |        45.92 |         -5.37 | False                       |
-| CD         |      7 |        25.52 |         15.04 | False                       |
-| ACD        |      8 |        27.88 |         12.68 | False                       |
-| BC         |      8 |        38.21 |          2.35 | False                       |
-| ABC        |      9 |        41.17 |         -0.62 | False                       |
-| BCD        |     10 |        25.23 |         15.33 | False                       |
-| ABCD       |     11 |        27.46 |         13.1  | False                       |
+## Results at a glance
 
-## Open the deliverables
+| Finding | Measured result |
+|---|---|
+| Evenly spaced arrivals saved time at 85% nominal load and the same average arrival rate. | [39.10 hours per lot fell to 26.72 hours, a saving of 12.38 hours.](docs/FINDINGS.md) |
+| No policy met the illustrative 24-hour target at that load. | [The lowest tested mean was 25.23 hours per lot.](docs/FINDINGS.md) |
+| Starting a partially filled furnace could increase waiting elsewhere. | [At 85% load, this change alone raised the original comparison mean from 40.56 to 43.80 hours per lot.](docs/FINDINGS.md) |
+| All 96 estimates met the precision target over the simulated periods. | [The largest 95% confidence interval extended 4.87% of the mean on either side.](results/final_precision.csv) |
+| The simulation failed to reproduce the published factory benchmark. | [With random arrivals averaging 120 minutes apart, measured cycle time was 13,554 minutes per lot versus 1,813 minutes published.](docs/BENCHMARK.md) |
 
-- `reports/report.pdf`: two-page write-up.
+## Quick start
 
-- `dashboard/dist/index.html`: interactive dashboard, works locally; hosted URL in `dashboard-url.txt` when publication succeeds.
+From the repository root, use Python 3.12 in an activated virtual environment.
 
-- `figures/`: operating curves for both comparison views, Pareto, effects, interactions, residuals, Welch plot, theory and sensitivity charts (PNG and SVG).
-
-- `notebooks/analysis.ipynb`: reproducible analysis notebook.
-
-- `results/`: run-level responses, confidence intervals, contrasts, ANOVA, Shapley allocation, budget, theory and verification tables.
-
-- `results/reporting.sqlite`: SQL dashboard audit sample for six scenarios at 85%, replication 0, plus all summary results.
-
-- `results/events/`: **complete** per-run visit/lot/activity tables. `event_manifest.csv` inventories the final factorial exports. The SQL sample is deliberately smaller than the complete archive.
+~~~sh
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests
+~~~
 
 ## Reproduce
 
-Python 3.12 was used. Create a virtual environment and run:
+Rebuild the [two-page report](reports/report.pdf) from the included summaries and figures:
 
-```shell
-
-python -m pip install -r requirements.txt
-
-python -m unittest discover -s tests
-
-python -m minifab_cycle_time_variability.experiment.experiment --phase pilot
-
-python -m minifab_cycle_time_variability.experiment.parallel_run --workers 4
-
-python -m minifab_cycle_time_variability.experiment.experiment --phase extras
-
-python -m minifab_cycle_time_variability.validation.reference_check
-
-python -m minifab_cycle_time_variability.analysis.analyze
-
-python -m minifab_cycle_time_variability.validation.audit
-
-python -m minifab_cycle_time_variability.reporting.build_reporting
-
+~~~sh
 python -m minifab_cycle_time_variability.reporting.make_report
+~~~
 
-```
+The report takes seconds once dependencies are installed and requires no credentials. The [full run sequence](docs/OPERATIONS.md) starts with calibration and takes several hours. The [versioned study download](https://github.com/shawnslee1202/minifab-cycle-time-variability/releases/tag/v1.0.0) includes run-level results and a sample database. Its scripts use the original layout.
 
-Run from this directory. `minifab_cycle_time_variability/experiment/parallel_run.py` resumes completed run IDs and caches pilot calibrations. To run a different design, use a new results directory or archive the existing one; do not mix changed models/parameters into the same checkpoint. Long-run experiments produce a substantial complete event archive. Two comparison views each contain 16 cells at three loads; replication counts differ by load as recorded in `results/design.json`. `minifab_cycle_time_variability/model/model.py` exposes Config and simulate for custom experiments.
+## Repository map
 
-The environment-specific bundled dependency path used during authoring is not embedded in model code. Requirements record the versions actually installed; newer versions may alter numerical/serialization behavior. The complete archive is data, not a runtime dependency.
+| Directory | Contents |
+|---|---|
+| [minifab_cycle_time_variability/](minifab_cycle_time_variability/) | Simulation model, experiment runners, analysis, validation and reporting |
+| [tests/](tests/) | Checks for machine use, routing, batch rules and time accounting |
+| [results/](results/) and [figures/](figures/) | Summary tables and charts |
+| [reports/](reports/) and [docs/](docs/) | Report, findings, methods and benchmark comparisons |
+| [notebooks/](notebooks/) | Analysis notebook |
+| [dashboard/](dashboard/dist/) and [tableau/](tableau/) | Offline HTML dashboard and packaged Tableau workbook |
 
-## Statistical definitions
+## Limitations
 
-Minutes internally; hours in charts. Cycle-time means use post-warm-up departures; WIP is an exact time integral including carry-in/carry-out. CI units are independent replications. Common random streams support paired contrasts. Shapley values allocate baseline-to-all gain, not the full raw cycle time. Equal-utilization charts target measured occupied/available lithography time; achieved utilization is always reported. Costs in costs.json are editable illustrative relative units (A=1,B=3,C=5,D=2); there is no empirical dollar-cost claim.
+- The main experiment follows one product through six processing steps. [Model](docs/MODEL.md)
+- Precise estimates over a fixed period can coexist with growing queues over longer periods. [Ten-year check](docs/FINDINGS.md)
+- The 24-hour target and the costs of the changes are illustrative. [Assumptions](docs/OPERATIONS.md)
+- Differences from the published benchmark limit the use of these estimates for factory forecasts. [Benchmark comparison](docs/BENCHMARK.md)
 
-## Reporting and BI
+## Sources and attribution
 
-`minifab_cycle_time_variability/reporting/views.sql` defines lot CT, daily moves, exact step WIP changes, machine utilization, and daily setup/PM/repair intervals. Daily downtime is split at midnight; machine batch time is not multiplied by batch size. Use `minifab_cycle_time_variability/reporting/build_reporting.py` to rebuild SQLite and dashboard data. `minifab_cycle_time_variability/reporting/all_events.duckdb.sql` provides full archive access; table grain and run ID must be preserved. Power BI/Tableau can ingest the supplied CSV summaries or SQLite/Parquet through an appropriate connector. A native packaged Tableau dashboard is included in tableau/Mini-Fab.twbx alongside the HTML dashboard.
+The result tables contain simulated data. The model uses Mini-Fab parameters reported by El-Khouly and Wang, operator assignments discussed by McGinnis, and published queueing formulas. [Sources and parameter choices](docs/MODEL.md)
 
-Nine model tests passed. The audit additionally checks complete factorial cells, unique run IDs, event-file presence and the Shapley identity. See validation.json for achieved thresholds; passing structural tests does not erase failed statistical or published-output validation.
-
-## Precision confirmation and long-run behavior
-
-For the complete runnable folder, download and extract the project ZIP from the GitHub release. It includes the large result tables, SQLite audit sample, all figures, and the offline HTML dashboard. The public source tree provides the model, analysis scripts, key result tables and Tableau workbook.
-
-96/96 finite-window cell means have relative 95% interval half-width below 5%. The largest half-width is 4.87%. The original balanced experiment supports paired factorial contrasts across all 16 combinations. The follow-up estimates use 6,989 independent confirmation runs and 256 fresh replications for the one case above 5% in that first confirmation. Every run retains its four Parquet tables locally. The downloadable package contains all 7,245 follow-up responses in compressed CSV. Reproduce with minifab_cycle_time_variability/experiment/confirm_precision.py, minifab_cycle_time_variability/experiment/confirm_last_cell.py, minifab_cycle_time_variability/analysis/final_precision.py and minifab_cycle_time_variability/experiment/long_horizon.py after installing the project dependencies. The archive of raw events supplied with the original study covers the original design and its sensitivity runs. The confirmation event files can be generated with the follow-up scripts.
-
-At 85% equal starts, baseline cycle time was 39.10 hours in the 102-run confirmation (95% interval ±0.79 hours). Constant starts had already met the criterion at 26.72 ±0.39 hours. The difference between those estimates is 12.38 hours. The original paired factorial gave 40.56 and 26.72 hours. Use the balanced design for interaction and attribution estimates, which depend on shared replication seeds. Precision applies to each mean separately. Selecting cells for confirmation based on pilot uncertainty does not give simultaneous 95% coverage across all cells.
-
-The ten-year check used six fresh replications per flagged cell. With 95% nominal load, equal starts, and ACD, mean daily WIP rose from 19.65 lots in year one to 134.71 in year ten. Estimates for this cell depend on the chosen horizon. See results/long_horizon_wip.csv. For the benchmark conditions, see [the failed external comparison](docs/BENCHMARK.md).
+The repository has no stated project license. Referenced publications and software dependencies retain their own terms.
