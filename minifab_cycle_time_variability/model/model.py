@@ -35,6 +35,7 @@ class Config:
     @property
     def mean_interval(self):return self.interval or 115/((690/720)*self.load)
 class Fab:
+    load_minutes = LOAD
     process_minutes = PROCESS
     unload_minutes = UNLOAD
 
@@ -128,10 +129,7 @@ class Fab:
                 for x in group:q.remove(x)
                 self.batch+=1;batch=self.batch;step=group[0][1];lot=group[0][0];start=self.env.now
                 for _,_,r in group:r.update(start=start,machine=m['name'],batch_id=batch)
-                setup=0
-                if s==2 and m['previous'] is not None:
-                    setup=self.setup_minutes(m['previous'],step,lot['product'])
-                    setup*=self.cfg.setup_scale if self.cfg.setup_scale>=0 else (.5 if self.cfg.B else 1.)
+                setup=self.changeover(m,step,lot,group[0][2]['queue_in'])
                 if setup:yield from self.work(m,setup,'setup',batch)
                 m['previous']=(step,lot['product'])
                 allowed=['PO1'] if s==0 else (['PO2'] if s==2 else ['PO1','PO2'])
@@ -141,7 +139,7 @@ class Fab:
                     yield self.ops.put(op);yield from self.wait_up(m)
                     op=yield self.ops.get(lambda x:x in allowed)
                 ls=self.env.now
-                yield self.env.timeout(LOAD[step]);self.activity.append((m['name'],'load',ls,self.env.now,batch))
+                yield self.env.timeout(self.load_minutes[step]);self.activity.append((m['name'],'load',ls,self.env.now,batch))
                 yield self.ops.put(op);yield from self.wait_up(m);ps=self.env.now
                 yield from self.work(m,self.process_minutes[step],'process',batch);pe=self.env.now
                 yield from self.wait_up(m)
@@ -152,13 +150,28 @@ class Fab:
                 us=self.env.now
                 yield self.env.timeout(self.unload_minutes[step]);self.activity.append((m['name'],'unload',us,self.env.now,batch))
                 yield self.ops.put(uop);end=self.env.now
+                m['unload_start']=us
+                m['unload_end']=end
                 self.activity.append((m['name'],'occupied',start,end,batch))
                 for l,st,r in group:
                     r.update(end=end,operator_id=op,unload_operator_id=uop,process_start=ps,process_end=pe,setup_minutes=setup)
-                    if st==5:l['exit']=end;self.active_wip-=1
-                    else:self.arrive(l,st+1)
+                    self.finish_visit(l,st,r)
             self.notify_maintenance()
             yield self.env.timeout(0)
+    def changeover(self,m,step,lot,queued_at):
+        if m['station'] != 2 or m['previous'] is None:
+            return 0
+        duration=self.setup_minutes(m['previous'],step,lot['product'])
+        scale=self.cfg.setup_scale if self.cfg.setup_scale>=0 else (.5 if self.cfg.B else 1.)
+        return duration*scale
+
+    def finish_visit(self,lot,step,record):
+        if step==5:
+            lot['exit']=self.env.now
+            self.active_wip-=1
+        else:
+            self.arrive(lot,step+1)
+
     def notify_maintenance(self):
         old=self.maintenance_signal;self.maintenance_signal=self.env.event();old.succeed()
     def pm(self,m,index):

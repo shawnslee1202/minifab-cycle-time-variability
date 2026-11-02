@@ -1,6 +1,6 @@
 # Mini-Fab cycle time variability
 
-How the timing of new orders affects the time a batch of wafers spends in a semiconductor factory.
+At 85% nominal load, none of the tested policies reached the illustrative 24-hour target. The shortest average time a lot spent in the factory was 25.23 hours.
 
 Author: Shawn ([shawnslee1202](https://github.com/shawnslee1202))
 
@@ -40,6 +40,8 @@ python -m minifab_cycle_time_variability.reporting.make_report
 ~~~
 
 The report takes seconds once dependencies are installed and requires no credentials. The [full run sequence](docs/OPERATIONS.md) starts with calibration and takes several hours. The [versioned study download](https://github.com/shawnslee1202/minifab-cycle-time-variability/releases/tag/v1.0.0) includes run-level results and a sample database. Its scripts use the original layout.
+
+Open the [Tableau workbook](tableau/Mini-Fab.twbx) in Tableau, or open [dashboard/dist/index.html](dashboard/dist/index.html) in a browser after downloading the repository.
 
 ## Repository map
 
