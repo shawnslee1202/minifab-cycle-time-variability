@@ -1,7 +1,7 @@
 """Verification tests exercise accounting, routing, batches and resource exclusion."""
 import unittest
 import numpy as np
-from model import Config,simulate,PROCESS,LOAD,UNLOAD
+from minifab_cycle_time_variability.model.model import Config,simulate,PROCESS,LOAD,UNLOAD
 class Verification(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

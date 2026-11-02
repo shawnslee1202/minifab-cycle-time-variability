@@ -2,8 +2,8 @@ from pathlib import Path
 import json
 import pandas as pd
 from scipy.stats import t
-from confirm_precision import schedule
-from experiment import DATA
+from minifab_cycle_time_variability.experiment.confirm_precision import schedule
+from minifab_cycle_time_variability.experiment.experiment import DATA
 
 def finish():
     specs=schedule()

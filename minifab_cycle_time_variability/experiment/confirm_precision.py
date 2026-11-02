@@ -11,8 +11,8 @@ import math
 import os
 import pandas as pd
 from scipy.stats import t
-from parallel_run import task
-from experiment import DATA
+from minifab_cycle_time_variability.experiment.parallel_run import task
+from minifab_cycle_time_variability.experiment.experiment import DATA
 
 CHECKPOINT = DATA / "confirmation"
 def execute(spec):

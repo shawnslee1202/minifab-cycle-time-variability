@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
-from model import Config,simulate
-D=Path(__file__).resolve().parent/'results';rows=[]
+from minifab_cycle_time_variability.model.model import Config,simulate
+D=Path(__file__).resolve().parents[2]/'results';rows=[]
 for constant in [0,1]:
  for rep in range(5):
     r,e,l,a,s=simulate(Config(interval=120,mix=True,D=constant,days=365,warm_days=90,rep=rep,personnel_constraints=False,view='reference'))

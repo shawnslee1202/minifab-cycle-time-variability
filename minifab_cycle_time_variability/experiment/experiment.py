@@ -1,13 +1,13 @@
 """Experiment runner: independent pilots, calibrated loads, replicated factorials.
-Run python experiment.py --phase pilot, then --phase main, then analyze.py.
+Run python -m minifab_cycle_time_variability.experiment.experiment --phase pilot, then --phase main, then analyze.py.
 """
 from pathlib import Path
 import argparse,json,itertools,time,sqlite3
 import numpy as np
 import pandas as pd
 from scipy.stats import t
-from model import Config,simulate
-ROOT=Path(__file__).resolve().parent
+from minifab_cycle_time_variability.model.model import Config,simulate
+ROOT=Path(__file__).resolve().parents[2]
 DATA=ROOT/'results';DATA.mkdir(exist_ok=True)
 LOGS=DATA/'events';LOGS.mkdir(exist_ok=True)
 FACTORS=list(itertools.product([0,1],repeat=4))

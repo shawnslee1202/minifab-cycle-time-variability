@@ -3,7 +3,7 @@ from pathlib import Path
 import sqlite3,json,shutil
 import numpy as np
 import pandas as pd
-ROOT=Path(__file__).resolve().parent;D=ROOT/'results';DIST=ROOT/'dashboard'/'dist'
+ROOT=Path(__file__).resolve().parents[2];D=ROOT/'results';DIST=ROOT/'dashboard'/'dist'
 def read_log(rid,suffix=''):
     p=D/'events'/(rid+suffix+'.parquet')
     return pd.read_parquet(p) if p.exists() else pd.read_csv(D/'events'/(rid+suffix+'.csv.gz'))
@@ -16,7 +16,7 @@ def build():
             read_log(rid,suffix).to_sql(table,db,if_exists='append',index=False,chunksize=10000)
     for table in ['summary','effects','budget','theory']:
         pd.read_csv(D/(table+'.csv')).to_sql(table,db,if_exists='replace',index=False)
-    db.executescript((ROOT/'views.sql').read_text(encoding='utf-8-sig'))
+    db.executescript((Path(__file__).with_name('views.sql')).read_text(encoding='utf-8-sig'))
     db.execute('CREATE INDEX IF NOT EXISTS ix_events ON events(run_id,lot_id,step)');db.execute('CREATE INDEX IF NOT EXISTS ix_lots ON lots(run_id,lot_id)');db.commit()
     details={}
     for sc in ['Baseline','A','B','C','D','ABCD']:
@@ -32,7 +32,7 @@ def build():
     for view in ['equal_starts','equal_utilization']:shutil.copy2(ROOT/'figures'/f'operating_{view}.png',DIST)
     print('SQL audit rows',db.execute('SELECT COUNT(*) FROM events').fetchone()[0]);db.close()
     # All-run SQL over Parquet without duplicating the full audit archive.
-    (ROOT/'all_events.duckdb.sql').write_text("""-- Start duckdb from the project root after converting any legacy gzip files.
+    (Path(__file__).with_name('all_events.duckdb.sql')).write_text("""-- Start duckdb from the project root after converting any legacy gzip files.
 CREATE OR REPLACE VIEW events_all AS SELECT * FROM read_parquet('results/events/*.parquet',union_by_name=true) WHERE step IS NOT NULL;
 -- Prefer the file manifest in results/event_manifest.csv to distinguish visit, lot, activity and WIP tables.
 """)

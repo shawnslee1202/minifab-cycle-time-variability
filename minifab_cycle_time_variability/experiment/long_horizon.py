@@ -7,8 +7,8 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from model import Config,Fab
-from experiment import DATA
+from minifab_cycle_time_variability.model.model import Config,Fab
+from minifab_cycle_time_variability.experiment.experiment import DATA
 
 class CountAppends:
     def __init__(self):

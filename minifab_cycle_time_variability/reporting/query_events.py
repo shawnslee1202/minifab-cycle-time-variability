@@ -3,7 +3,7 @@ from pathlib import Path
 import argparse
 import pandas as pd
 import duckdb
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[2]
 def connect():
     manifest=pd.read_csv(ROOT/'results'/'event_manifest.csv');db=duckdb.connect()
     for kind in ['events','lots','activity','wip']:

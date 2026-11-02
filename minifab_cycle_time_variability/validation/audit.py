@@ -4,7 +4,7 @@ import json,hashlib
 import pandas as pd
 import numpy as np
 from scipy import stats
-ROOT=Path(__file__).resolve().parent;D=ROOT/'results'
+ROOT=Path(__file__).resolve().parents[2];D=ROOT/'results'
 def audit():
     r=pd.read_csv(D/'runs.csv');records=[];manifest=[]
     for row in r.itertuples():

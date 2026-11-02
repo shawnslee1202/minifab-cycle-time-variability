@@ -8,7 +8,7 @@ from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 import pandas as pd
 import simpy
-from model import Fab,Config
+from minifab_cycle_time_variability.model.model import Fab,Config
 
 class NistFab(Fab):
     process_minutes = [225,30,55,50,225,10]
@@ -61,5 +61,5 @@ if __name__=="__main__":
     cases=[(rep,extra,trigger) for rep in range(5) for extra in (0,1) for trigger in ("product","step")]
     with ProcessPoolExecutor(3) as pool:
         data=pd.DataFrame([row for group in pool.map(measure,cases) for row in group])
-    data.to_csv(Path(__file__).parent/"results/nist_reference.csv",index=False)
+    data.to_csv(Path(__file__).resolve().parents[2]/"results/nist_reference.csv",index=False)
     print(data.groupby(["extra_PO1","setup_trigger","product"])[["ct_hours","wip"]].mean())

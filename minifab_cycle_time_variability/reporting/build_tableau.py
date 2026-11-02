@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from zipfile import ZipFile,ZIP_DEFLATED
 import pandas as pd
-R=Path(__file__).resolve().parent
+R=Path(__file__).resolve().parents[2]
 OUT=R/"tableau"
 def add(parent,tag,**attributes):
     return ET.SubElement(parent,tag,{k:str(v) for k,v in attributes.items()})

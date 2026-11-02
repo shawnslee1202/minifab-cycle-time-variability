@@ -3,7 +3,7 @@ from concurrent.futures import ProcessPoolExecutor
 import json
 import pandas as pd
 from scipy.stats import t
-from confirm_precision import execute, DATA, CHECKPOINT
+from minifab_cycle_time_variability.experiment.confirm_precision import execute, DATA, CHECKPOINT
 
 if __name__ == "__main__":
     template = pd.read_csv(DATA / "runs.csv").query(

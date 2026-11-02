@@ -6,8 +6,8 @@ from concurrent.futures import ProcessPoolExecutor,as_completed
 import argparse,json,itertools,time,os
 import pandas as pd
 import numpy as np
-from experiment import config,theory,FACTORS,ROOT,DATA,LOGS
-from model import Config,simulate
+from minifab_cycle_time_variability.experiment.experiment import config,theory,FACTORS,ROOT,DATA,LOGS
+from minifab_cycle_time_variability.model.model import Config,simulate
 
 def task(spec):
     bits,kw,rid=spec

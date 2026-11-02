@@ -9,7 +9,7 @@ from statsmodels.formula.api import ols
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-ROOT=Path(__file__).resolve().parent;DATA=ROOT/'results';FIG=ROOT/'figures';FIG.mkdir(exist_ok=True)
+ROOT=Path(__file__).resolve().parents[2];DATA=ROOT/'results';FIG=ROOT/'figures';FIG.mkdir(exist_ok=True)
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.spines.top':False,'axes.spines.right':False,'figure.dpi':140,'savefig.bbox':'tight'})
 COLORS=['#243b53','#ef8354','#2a9d8f','#9b5de5','#dca11d','#006d77']
 LABELS={'Baseline':'Baseline','A':'A: partial batches','B':'B: litho setups','C':'C: implant repair','D':'D: smooth releases','ABCD':'All improvements'}

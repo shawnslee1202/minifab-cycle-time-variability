@@ -4,8 +4,8 @@ Adds a balanced block of new replications for a view/load; never treats lots as 
 import argparse,json
 from concurrent.futures import ProcessPoolExecutor,as_completed
 import pandas as pd
-from parallel_run import task
-from experiment import DATA,FACTORS,config
+from minifab_cycle_time_variability.experiment.parallel_run import task
+from minifab_cycle_time_variability.experiment.experiment import DATA,FACTORS,config
 
 def extend(view,load,additional,workers):
     r=pd.read_csv(DATA/'runs.csv');th=pd.read_csv(DATA/'theory.csv')
